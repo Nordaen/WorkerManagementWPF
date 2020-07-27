@@ -1,0 +1,120 @@
+﻿<Window x:Class="TestTaskWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestTaskWPF"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"       
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+        xmlns:local1="clr-namespace:TestTaskWPF.Common"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        mc:Ignorable="d"
+        Title="Worker Management" Height="800" Width="1600">
+    <Window.Resources>
+
+        <local1:DateToAgeConverter x:Key="DateToAge"/>
+    </Window.Resources>
+    <Grid>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ToolBar Grid.Row="0" Grid.Column="0">
+            <TextBlock Height="18" HorizontalAlignment="Center" Margin="5,0,5,0">Filters:</TextBlock>
+            <TextBox Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}"
+                            MinWidth="60" Height="30" materialDesign:HintAssist.Hint="Name"/>
+            <TextBox Text="{Binding PositionFilter, UpdateSourceTrigger=PropertyChanged}"
+                            MinWidth="60" Height="30" materialDesign:HintAssist.Hint="Position"/>
+            
+            <Separator/>
+            <Button Command="{Binding ApplyWorkerFilters}" ToolTip="Add filter" Margin="5, 0, 5, 0">
+                <materialDesign:PackIcon Kind="Check"/>
+            </Button>
+            <Button Command="{Binding RemoveWorkerFilters}" ToolTip="Remove filter" Margin="5, 0, 5, 0">
+                <materialDesign:PackIcon Kind="Close"/>
+            </Button>
+            <Button Command="{Binding OpenAddWorkerDialog}" ToolTip="Add worker" Margin="5, 0, 5, 0">
+                <materialDesign:PackIcon Kind="Plus"/>
+            </Button>
+            <Button Command="{Binding RemoveWorker}" Margin="5, 0, 5, 0" ToolTip="Delete worker">
+                <materialDesign:PackIcon Kind="Delete"/>
+            </Button>
+            <Button Command="{Binding OpenChangeWorkDialog}" Margin="5, 0, 5, 0" ToolTip="ChangeWork">
+                <materialDesign:PackIcon Kind="AccountConvert"/>
+            </Button>
+        </ToolBar>
+
+        <DataGrid VirtualizingStackPanel.IsVirtualizing="True" x:Name="RolesGrid" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding WorkersCollection, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay}" AutoGenerateColumns="False"
+                          CanUserResizeColumns="True" CanUserSortColumns="True"    HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedWorker}" VerticalAlignment="Stretch" ColumnWidth="*" IsReadOnly="True" SelectionChanged="RolesGrid_SelectionChanged" >
+
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="auto" MinWidth="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button ToolTip="Редактировать запись" Click="EnableEditMode" MinWidth="100">
+                                    <materialDesign:PackIcon Kind="SquareEditOutline"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Width="auto">
+                                <Button Click="CommitEdit" MinWidth="50" Margin="0 0 5 0">
+                                    <materialDesign:PackIcon Kind="Check"/>
+                                </Button>
+                                <Button Content="X" Click="CancelEditMode" MinWidth="50" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" MinWidth="200" Header="Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" MinWidth="200" Header="Position">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Position}" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Background="Azure" Text="{Binding Position, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" MinWidth="200" Header="Age">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Birthday,Converter={StaticResource DateToAge}}" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" MinWidth="200" Header="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Status}" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+    
+</Window>
